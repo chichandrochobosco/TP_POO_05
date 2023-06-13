@@ -1,28 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package tpsupermarkey;
+package tpsupermarket;
 
-/**
- *
- * @author losmelli
- */
-public class Producto {
+public class Producto implements Cloneable{
 
     private String nombre;
     private String marca;
-    private int precio;
+    private double precio;
     private boolean primNec;
     private boolean precioCuidado;
 
-     public Producto(String nombre, String marca, int precio, boolean precioCuidado,boolean primNecesidad) {
+    public Producto(String nombre, String marca, double precio, boolean precioCuidado,boolean primNecesidad) {
        this(nombre, marca, precio,primNecesidad);
-        this.precioCuidado = precioCuidado;
+       this.precioCuidado = precioCuidado;
     }
     
-    public Producto(String nombre, String marca, int precio,boolean primNec) {
+    public Producto(String nombre, String marca, double precio,boolean primNec) {
         this.nombre = nombre;
         this.marca = marca;
         this.precio = precio;
@@ -41,7 +32,7 @@ public class Producto {
         return marca;
     }
 
-    public int getPrecio() {
+    public double getPrecio() {
         return precio;
     }
 
@@ -53,5 +44,11 @@ public class Producto {
         return precioCuidado;
     }
     
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+  
+        Producto copia = new Producto (this.nombre,this.marca,this.precio,this.precioCuidado, this.primNec);
+        return copia;
+    }
     
 }
