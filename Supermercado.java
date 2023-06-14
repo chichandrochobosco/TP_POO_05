@@ -47,6 +47,9 @@ public class Supermercado {
     }
     
     private double calcularMontoCompra(List<Producto> productos){
+  // este método debería pertencer a la compra (Venta) que es la dueña de la lista de productos
+        
+        
         double montoCompra = 0;
         for(Producto p: productos){
             double precioProducto = p.getPrecio();
