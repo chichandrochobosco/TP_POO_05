@@ -1,5 +1,5 @@
 package tpsupermarket;
-
+// Si el producto es Primera necesidad, el constructor debería recibir el pocentaje para realizar el descuento al precio ( esto es preferible hacerlo en el constructor de este producto)
 public class Producto implements Cloneable{
 
     private String nombre;
@@ -9,7 +9,8 @@ public class Producto implements Cloneable{
     private boolean precioCuidado;
 
     public Producto(String nombre, String marca, double precio, boolean precioCuidado,boolean primNecesidad) {
-       this(nombre, marca, precio,primNecesidad);
+      
+        this(nombre, marca, precio,primNecesidad); // ¿Esto compila ? 
        this.precioCuidado = precioCuidado;
     }
     
