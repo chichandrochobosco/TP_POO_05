@@ -4,75 +4,100 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Supermercado {
-    private List<Compra> compras;
-    private List<Producto> productos;
+
+    private List<Venta> ventas;
+    private List<Producto> productosDisponibles;
     private double importeTotalVentas;
     private double importeTotalDescuento;
     private int cantProdVendidosPrimeraNec;
     private int cantProdVendidosPreciosCuidados;
 
-    public Supermercado(List<Producto> productos) {
-        this.compras = new ArrayList<>();
-        this.productos = productos;
+    public Supermercado(List<Producto> productosDisponibles) {
+        this.ventas = new ArrayList<>();
+        this.productosDisponibles = productosDisponibles;
+    }
+
+    public void realizarVenta(List<Producto> productosVenta,String fecha) {
+        Venta venta = new Venta(productosVenta,fecha);
+        ventas.add(venta);
+        emitirTicket(venta);
+        importeTotalVentas += venta.getValorTotal();
+        sumarImporteDescuento(venta);
+    }
+
+    public void emitirTicket(Venta venta) {
+        System.out.println("---TICKET---");
+        System.out.println("N°:" + (venta.getId()+1));
+        for (Producto p : venta.getProductos()) {
+            p.mostrarDatos();
+        }
+        System.out.println("FECHA: " + venta.getFecha());
+        System.out.println("Total:" + venta.getValorTotal());
     }
     
-    public double obtenerTotalVentas(){
+    public void calcularProductosPrimeraNecesidad(List<Venta> ventas) {
+        for (Venta v : ventas) {
+            for (Producto p : v.getProductos()) {
+                if (p instanceof ProductoPrimeraNecesidad) {
+                    cantProdVendidosPrimeraNec++;
+                }
+            }
+        }
+    }
+
+    public void calcularProductosPreciosCuidados(List<Venta> ventas) {
+        for (Venta v : ventas) {
+            for (Producto p : v.getProductos()) {
+                if (p.esPrecioCuidado()) {
+                    cantProdVendidosPreciosCuidados++;
+                }
+            }
+        }
+    }
+
+    public void sumarImporteDescuento(Venta venta) {
+        for (Producto p : venta.getProductos()) {
+            if (p instanceof ProductoPrimeraNecesidad) {
+                double precioOriginal = ((p.getPrecio() * 100) / 90);
+                importeTotalDescuento += precioOriginal * (0.1);
+            }
+        }
+    }
+
+    public double obtenerTotalVentas() {
         return importeTotalVentas;
     }
-    
-    public double obtenerCantProdPrimeraNec(){
+
+    public double obtenerCantProdPrimeraNec() {
+        calcularProductosPrimeraNecesidad(ventas);
         return cantProdVendidosPrimeraNec;
     }
-    
-    public double obtenerCantProdPreciosCuidados(){
+
+    public double obtenerCantProdPreciosCuidados() {
+        calcularProductosPreciosCuidados(ventas);
         return cantProdVendidosPreciosCuidados;
     }
-    
-    public double obtenerImporteTotalDescuentos(){
+
+    public double obtenerImporteTotalDescuentos() {
         return importeTotalDescuento;
     }
 
-    public void hacerCompra(List<Producto> productos){
-        double valorCompra = calcularMontoCompra(productos);
-        Compra compra = new Compra(productos,valorCompra);
-        compras.add(compra);
-    }
-    
-    public void añadirProducto(Producto producto){
-        productos.add(producto);
-    }
-    
-    public void eliminarProducto(Producto producto){
-        productos.remove(producto);
-    }
-    
-    private double calcularMontoCompra(List<Producto> productos){
-  // este método debería pertencer a la compra (Venta) que es la dueña de la lista de productos
-        
-        
-        double montoCompra = 0;
-        for(Producto p: productos){
-            double precioProducto = p.getPrecio();
-            if (p.esPrimNec()) {
-                double descuento = (precioProducto * 0.1);
-                precioProducto = precioProducto - descuento;
-                importeTotalDescuento = importeTotalDescuento + descuento;
-                cantProdVendidosPrimeraNec++;
-            }
-            if(p.esPrecioCuidado()){
-                cantProdVendidosPreciosCuidados++;
-            }
-            
-            montoCompra = montoCompra + precioProducto;
-        }
-        importeTotalVentas = importeTotalVentas + montoCompra;
-        return montoCompra;
+    public void añadirProducto(Producto producto) {
+        productosDisponibles.add(producto);
     }
 
-    public List<Producto> getProductos() {
-        return productos;
+    public void eliminarProducto(String nombreProducto) {
+        int cont=0;
+        for(Producto p: productosDisponibles){
+            if(p.getNombre().equalsIgnoreCase(nombreProducto)){
+                productosDisponibles.remove(cont);
+                return;
+            }
+            cont++;
+        }
     }
-    
-    
-    
+
+    public List<Producto> getProductosDisponibles() {
+        return productosDisponibles;
+    }
 }
